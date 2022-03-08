@@ -18,10 +18,29 @@ const GameTitle = styled.h1`
     color: #fff;
 `;
 
+const TitleContainer = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: center;
+`
 
 const ConnectWalletBtn = styled.button`
-    
+    background-color: #000; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 30px;
 `;
+
+const WalletContainer = styled.div`
+    display: flex;
+    flex: 0.5;
+    justify-content: center;
+`
 
 interface IProps {
     children: any;
@@ -32,9 +51,16 @@ function GameHeader() {
 
     return (
         <GameHeaderContainer>
-            <GameTitle>
-                Minotaur
-            </GameTitle>
+            <TitleContainer>
+                <GameTitle>
+                    Minotaur
+                </GameTitle>
+            </TitleContainer>
+            <WalletContainer>
+                <ConnectWalletBtn>
+                    Start Demo Game
+                </ConnectWalletBtn>
+            </WalletContainer>
         </GameHeaderContainer>
     );
 }
