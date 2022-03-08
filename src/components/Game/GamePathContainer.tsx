@@ -97,22 +97,28 @@ function GamePathContainer() {
         }
     }
 
+    const chainIdSlice = (chainId: string) => {
+        const wallet = `${chainId.slice(0, 5)}...${chainId.slice(chainId.length - 4, chainId.length)}`;
+        setWalletAddress(wallet);
+    }
+
+
     const login = async () => {
         if (!isAuthenticated) {
             await authenticate({ signingMessage: "Log in using Moralis" })
                 .then(function (user) {
                     SwitchNetwork();
                     console.log("logged in user:", user);
-                    setWalletAddress(user!.get("ethAddress"))
+                    chainIdSlice(user!.get("ethAddress"));
                 })
                 .catch(function (error) { console.log(error); });
         }
     }
 
+
     function handleGetUser() {
         if (metamask.account) {
-            const wallet = `${metamask.account.slice(0, 5)}...${metamask.account.slice(metamask.account.length - 4, metamask.account.length)}`;
-            setWalletAddress(wallet);
+            chainIdSlice(metamask.account);
         }
 
     }
@@ -126,12 +132,14 @@ function GamePathContainer() {
     return (
         <PathContainer>
             <CardListContainer>
-                <WalletAddressContainer>
-                    <WalletAddressText>
-                        <PolygonLogo />
-                        Wallet: {walletAddress}
-                    </WalletAddressText>
-                </WalletAddressContainer>
+                {isAuthenticated &&
+                    <WalletAddressContainer>
+                        <WalletAddressText>
+                            <PolygonLogo />
+                            Wallet: {walletAddress}
+                        </WalletAddressText>
+                    </WalletAddressContainer>
+                }
                 <CardListInnerContainer>
                     <GameCard />
                     <GameCard />
