@@ -115,13 +115,10 @@ function GamePathContainer() {
         }
     }
 
-<<<<<<< HEAD
     const logOut = async () => {
         await logout();
         console.log("logged out");
     }
-=======
->>>>>>> 0164fb733e4f188bcf15b77b4cc3d85bcc068831
 
     function handleGetUser() {
         if (metamask.account) {
