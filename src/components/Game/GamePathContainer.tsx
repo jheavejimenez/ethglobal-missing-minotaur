@@ -5,7 +5,7 @@ import TileComponent from './Tile/TileComponent';
 import { chainId, chainName, currencyName, currencySymbol, rpcUrl, blockExplorerUrl} from '../../constants/moralisConstants'
 import { useMetaMask } from "metamask-react";
 import { useMoralis } from "react-moralis";
-import Web3 from 'web3';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 
 const PathContainer = styled.div`
@@ -15,9 +15,9 @@ const PathContainer = styled.div`
     justify-content: center;
     align-items: center;
     border: 1px solid white;
-`;
-
-const TileContainer = styled.div`
+    `;
+    
+    const TileContainer = styled.div`
     height: 600px;
     width: 600px;
     border: 1px solid white;
@@ -26,37 +26,29 @@ const TileContainer = styled.div`
 
 function GamePathContainer() {
     const { authenticate, isAuthenticated, isAuthenticating, logout, Moralis } = useMoralis();
-
+    const { status } = useMetaMask();
+    
     const SwitchNetwork = async () => {
-        const test = await Moralis.enableWeb3();
+        const provider = await detectEthereumProvider();
 
-        if (!test) {
+        if (provider) {
             try {
                 await Moralis.switchNetwork(chainId);
             } catch (error: any) {
-                if (error.code === '4902') {
-                    try {
-                        await test.provider.request({
-                            method: "wallet_addEthereumChain",
-                            params: [
-                            {
-                                chainId: "0x13881",
-                                chainName: "Mumbai",
-                                rpcUrls: ["https://rpc-mumbai.matic.today"],
-                                nativeCurrency: {
-                                    name: "Matic",
-                                    symbol: "Matic",
-                                    decimals: 18,
-                                },
-                                blockExplorerUrls: ["https://explorer-mumbai.maticvigil.com"],
-                                },
-                            ],
-                        });
-                        await Moralis.switchNetwork(chainId);
-                    } catch (error: any) {
-                        console.log(error);
-                    }
+                try {
+                    await Moralis.addNetwork(
+                        chainId, 
+                        chainName, 
+                        currencyName, 
+                        currencySymbol, 
+                        rpcUrl,
+                        blockExplorerUrl
+                    );
+                    await Moralis.switchNetwork(chainId);
+                } catch (error: any) {
+                    console.log(error);
                 }
+                
             }
         } else {
             alert('MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html');
@@ -64,13 +56,13 @@ function GamePathContainer() {
     }
 
     const login = async () => {
-        // const test = await Moralis.enableWeb3();
-        // const ethers = Moralis.web3Library
-        // const a = test.provider.request
-        // console.log(a);
         if (!isAuthenticated) {
             await authenticate({signingMessage: "Log in using Moralis"})
-            .then(function (user) {})
+            .then(function (user) {
+                SwitchNetwork();
+                console.log("logged in user:", user);
+                console.log(user!.get("ethAddress"));
+            })
             .catch(function (error) 
             {console.log(error);});
         }
