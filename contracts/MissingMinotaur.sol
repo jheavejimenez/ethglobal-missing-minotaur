@@ -21,7 +21,10 @@ contract MissingMinotaur is ERC721URIStorage {
     _safeMint(msg.sender, newItemId);
 
     // Set the NFTs data.
-    _setTokenURI(newItemId, "blah");
+    _setTokenURI(newItemId, "INSERT_JSON_URL_HERE");
+    console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
+
+    // increment the tokenIds counter
     _tokenIds.increment();
 
   }
