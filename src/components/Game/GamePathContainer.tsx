@@ -109,6 +109,11 @@ function GamePathContainer() {
         }
     }
 
+    const logOut = async () => {
+        await logout();
+        console.log("logged out");
+    }
+
     function handleGetUser() {
         if (metamask.account) {
             const wallet = `${metamask.account.slice(0, 5)}...${metamask.account.slice(metamask.account.length - 4, metamask.account.length)}`;
@@ -146,6 +151,12 @@ function GamePathContainer() {
             >
                 {isAuthenticated ? "Mint" : "Connect Wallet"}
             </NetworkBtn>
+            <button 
+            onClick={logOut} 
+            disabled={isAuthenticating}
+            >
+                Logout
+        </button>
         </PathContainer>
     );
 }
