@@ -3,7 +3,6 @@ import styled, { css, keyframes } from "styled-components";
 import { NetworkBtn } from '../Button';
 import TileComponent from './Tile/TileComponent';
 import { chainId, chainName, currencyName, currencySymbol, rpcUrl, blockExplorerUrl} from '../../constants/moralisConstants'
-import { useMetaMask } from "metamask-react";
 import { useMoralis } from "react-moralis";
 import detectEthereumProvider from '@metamask/detect-provider';
 
@@ -26,7 +25,6 @@ const PathContainer = styled.div`
 
 function GamePathContainer() {
     const { authenticate, isAuthenticated, isAuthenticating, logout, Moralis } = useMoralis();
-    const { status } = useMetaMask();
     
     const SwitchNetwork = async () => {
         const provider = await detectEthereumProvider();
