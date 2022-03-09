@@ -1,12 +1,16 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Game from './components/Game/Game';
+import Navigation from './Navigation';
+import {
+  BrowserRouter as Router
+} from "react-router-dom";
 
 function App() {
 
   return (
-    <Game></Game>
+    <Router>
+      <Navigation />
+    </Router>
   );
 }
 
