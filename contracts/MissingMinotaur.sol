@@ -16,9 +16,8 @@ contract MissingMinotaur is ERC721, Ownable {
   string public baseExtension = ".json";
 
   uint256 public constant MAX_SUPPLY = 999;
-
-  //TODO change mint price after testing 
   
+  //TODO change mint price after testing 
   uint256 public mintPrice = 0.01 ether;
   
   constructor() ERC721 ("Missing Minotaur", "Missing Minotaur") {}
