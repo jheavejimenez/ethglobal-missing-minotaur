@@ -16,6 +16,7 @@ contract MissingMinotaur is ERC721, Ownable {
   string public baseExtension = ".json";
 
   uint256 public constant MAX_SUPPLY = 999;
+  uint256 public constant OWNER_MAX_CLAIM = 100;
   
   //TODO change mint price after testing 
   uint256 public mintPrice = 0.01 ether;
@@ -40,7 +41,7 @@ contract MissingMinotaur is ERC721, Ownable {
   }
 
   function ownerClaim(address _receiver) public onlyOwner {
-    require(supply.current() > 899 && supply.current() < MAX_SUPPLY, "invalid claim");
+    require((supply.current() < OWNER_MAX_CLAIM) && (supply.current() < MAX_SUPPLY), "Max supply exceeded!");
     _safeMint(_receiver, supply.current());
     supply.increment();
   }
