@@ -5,6 +5,7 @@ const StatContainer = styled.div`
     display: flex;
     flex: 1;
     height: 100%;
+    border: 1px solid white;
 `;
 
 function GameStatsContainer() {

@@ -27,7 +27,7 @@ function GameMainContainer() {
     return (
         <MainContainer>
             <GamePathContainer />
-            {/* <GameStatsContainer /> */}
+            <GameStatsContainer />
         </MainContainer>
     );
 }
