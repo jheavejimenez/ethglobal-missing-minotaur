@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract MissingMinotaur is ERC721, Ownable {
     using Strings for uint256;
     using Counters for Counters.Counter;
-    Counters.Counter private supply ;
+    Counters.Counter private supply;
 
     string public baseURI = "";
     string public baseExtension = ".json";
@@ -75,7 +75,6 @@ contract MissingMinotaur is ERC721, Ownable {
     }
 
     function withdraw() public onlyOwner {
-        (bool os, ) = payable(owner()).call{value: address(this).balance}("");
-        require(os);
+        payable(owner()).transfer(address(this).balance);
     }
 }

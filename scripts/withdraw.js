@@ -26,7 +26,7 @@ const main = async () => {
     let ownerBalance = await hre.ethers.provider.getBalance(owner.address);
     console.log("Balance of owner before withdrawal:", hre.ethers.utils.formatEther(ownerBalance));
 
-    // Now let's withdraw from the contract (as owner)
+    // // Now let's withdraw from the contract (as owner)
     txn = await nftContract.connect(owner).withdraw();
     await txn.wait();
     
