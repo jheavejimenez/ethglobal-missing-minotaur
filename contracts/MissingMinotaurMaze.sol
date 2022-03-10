@@ -109,7 +109,7 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
         _burn(tokenId);
         payable(msg.sender).transfer(1 ether);
     }
-    
+
     function withdraw() public onlyOwner {
         payable(owner()).transfer(address(this).balance);
     }
