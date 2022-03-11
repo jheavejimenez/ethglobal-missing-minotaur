@@ -1,15 +1,16 @@
 {
   "files": {
     "main.css": "https://jheavejimenez.github.io/ethglobal-missing-minotaur/static/css/main.073c9b0a.css",
-    "main.js": "https://jheavejimenez.github.io/ethglobal-missing-minotaur/static/js/main.8b599f33.js",
+    "main.js": "https://jheavejimenez.github.io/ethglobal-missing-minotaur/static/js/main.978ed784.js",
     "static/js/787.10eb2961.chunk.js": "https://jheavejimenez.github.io/ethglobal-missing-minotaur/static/js/787.10eb2961.chunk.js",
+    "static/media/polygonlogo.png": "https://jheavejimenez.github.io/ethglobal-missing-minotaur/static/media/polygonlogo.6cde40a9b9119621eb2b.png",
     "index.html": "https://jheavejimenez.github.io/ethglobal-missing-minotaur/index.html",
     "main.073c9b0a.css.map": "https://jheavejimenez.github.io/ethglobal-missing-minotaur/static/css/main.073c9b0a.css.map",
-    "main.8b599f33.js.map": "https://jheavejimenez.github.io/ethglobal-missing-minotaur/static/js/main.8b599f33.js.map",
+    "main.978ed784.js.map": "https://jheavejimenez.github.io/ethglobal-missing-minotaur/static/js/main.978ed784.js.map",
     "787.10eb2961.chunk.js.map": "https://jheavejimenez.github.io/ethglobal-missing-minotaur/static/js/787.10eb2961.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.8b599f33.js"
+    "static/js/main.978ed784.js"
   ]
 }
