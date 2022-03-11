@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { NetworkBtn } from '../Button';
-import { chainId, chainName, currencyName, currencySymbol, rpcUrl, blockExplorerUrl } from '../../constants/moralisConstants'
-import { useMoralis } from "react-moralis";
+import { chainId, chainName, currencyName, currencySymbol, rpcUrl, blockExplorerUrl, CONTRACT_ADDRESS, CONTRACT_ABI } from '../../constants/moralisConstants'
+import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import detectEthereumProvider from '@metamask/detect-provider';
 import GameCard from '../../components/Game/Card/GameCard';
-import Web3 from "web3";
 import { useMetaMask } from "metamask-react";
 import Logo from "../../assets/images/polygonlogo.png";
 
@@ -68,6 +67,7 @@ function HomeComponent() {
     const { authenticate, isAuthenticated, isAuthenticating, logout, Moralis, account } = useMoralis();
     const [walletAddress, setWalletAddress] = useState<string>("");
     const metamask = useMetaMask();
+    const web3 = useWeb3ExecuteFunction();
 
     const SwitchNetwork = async () => {
         const provider = await detectEthereumProvider();
@@ -101,6 +101,23 @@ function HomeComponent() {
         setWalletAddress(wallet);
     }
 
+    const mintNft = async () => {
+        console.log('mint')
+        await web3.fetch({
+            params: {
+                contractAddress: CONTRACT_ADDRESS,
+                functionName: "mintNFT",
+                abi: CONTRACT_ABI,
+                msgValue: Moralis.Units.ETH(0.01),
+                }
+            })
+            .then((response) => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
 
     const login = async () => {
         if (!isAuthenticated) {
@@ -165,7 +182,7 @@ function HomeComponent() {
             </CardListContainer>
 
             <NetworkBtn
-                onClick={isAuthenticated ? () => { } : login}
+                onClick={isAuthenticated ? mintNft : login}
             >
                 {isAuthenticated ? "Mint" : "Connect Wallet"}
             </NetworkBtn>
