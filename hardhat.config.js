@@ -1,3 +1,4 @@
+let secret = require('./secret.json');
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
 
@@ -17,8 +18,16 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
- module.exports = {
-  solidity: "0.8.4",
+module.exports = {
+  solidity:  {
+    version: "0.8.1",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
+  },
   networks: {
     mumbai: {
       url: secret.url,
