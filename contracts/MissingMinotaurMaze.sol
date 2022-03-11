@@ -26,6 +26,7 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
     uint256 public mintPrice = 1 ether;
 
     uint256 public randomNumber = 50;
+    address[] contractAddress;
 
     constructor() ERC721('Missing Minotaur Maze', 'MMM') {}
 
@@ -88,8 +89,12 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
             msg.value >= mintPrice,
             'MMM: Amount of MATIC sent is incorrect.'
         );
-        // TODO: require that player has Missing Minotaur NFT
-
+        uint256 sum = 0;
+        for (uint256 i = 0; i < contractAddress.length; i++) {
+            sum += ERC721(contractAddress[i]).balanceOf(msg.sender);
+            if (sum > 0) break;
+        }
+        require(sum > 0, "Should have NFT associated with Missing Minotaur Maze");
         supply.increment();
         _safeMint(msg.sender, supply.current());
     }

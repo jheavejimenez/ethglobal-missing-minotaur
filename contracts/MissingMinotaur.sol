@@ -33,15 +33,15 @@ contract MissingMinotaur is ERC721, Ownable {
 
     function mintNFT() public payable mintCondition {
         require(msg.value >= mintPrice, "Insufficient funds!");
-        _safeMint(msg.sender, supply.current());
         supply.increment();
+        _safeMint(msg.sender, supply.current());
 
     }
 
     function ownerClaim(address _receiver) public onlyOwner {
         require((supply.current() < OWNER_MAX_CLAIM) && (supply.current() < MAX_SUPPLY), "Max supply exceeded!");
-        _safeMint(_receiver, supply.current());
         supply.increment();
+        _safeMint(_receiver, supply.current());
     }
 
     function walletOfOwner(address _owner) public view returns (uint256[] memory) {
