@@ -5,7 +5,6 @@ import { chainId, chainName, currencyName, currencySymbol, rpcUrl, blockExplorer
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import detectEthereumProvider from '@metamask/detect-provider';
 import GameCard from '../../components/Game/Card/GameCard';
-import Web3 from "web3";
 import { useMetaMask } from "metamask-react";
 import Logo from "../../assets/images/polygonlogo.png";
 
@@ -109,7 +108,7 @@ function HomeComponent() {
                 contractAddress: CONTRACT_ADDRESS,
                 functionName: "mintNFT",
                 abi: CONTRACT_ABI,
-                msgValue: Moralis.Units.ETH(0.00001),
+                msgValue: Moralis.Units.ETH(0.01),
                 }
             })
             .then((response) => {
