@@ -29,8 +29,8 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
     uint256 public randomNumber = 50;
     uint constant TEN_MINS = 600;
 
-    address[] contractAddress;
     mapping(uint256 => uint256) public mintTimestamps;
+    address[] public contractAddress;
 
     constructor() ERC721('Missing Minotaur Maze', 'MMM') {}
 
