@@ -1,7 +1,6 @@
 
 import React from 'react';
-import styled, { css, CSSProperties, keyframes } from "styled-components";
-import { NetworkBtn } from '../components/Button';
+import styled, { CSSProperties } from "styled-components";
 
 
 const GameHeaderContainer = styled.div`
@@ -49,6 +48,13 @@ const WalletContainer = styled.div`
     justify-content: center;
 `;
 
+
+interface IProps {
+    btnName: string;
+    url: string;
+    onClick: () => void;
+}
+
 const GameStartBtn = styled.a`
     background-color: #000; /* Green */
     border: none;
@@ -61,7 +67,6 @@ const GameStartBtn = styled.a`
     border-radius: 30px;
 `;
 
-
 function NavLink(props: { name: string, urlName: string, style?: CSSProperties }) {
     const { urlName, name, style } = props;
     return (
@@ -71,14 +76,8 @@ function NavLink(props: { name: string, urlName: string, style?: CSSProperties }
     );
 }
 
-interface IProps {
-    btnName: string;
-    url: string;
-}
-
 function MainHeader(props: IProps) {
     const { btnName, url } = props;
-
     return (
         <GameHeaderContainer>
             <TitleContainer>
@@ -87,10 +86,10 @@ function MainHeader(props: IProps) {
                 </GameTitle>
             </TitleContainer>
             <WalletContainer>
-                <NavLink
-                    urlName={url}
-                    name={btnName}
-                />
+            <NavLink
+                urlName={url}
+                name={btnName}
+            />
             </WalletContainer>
         </GameHeaderContainer>
     );

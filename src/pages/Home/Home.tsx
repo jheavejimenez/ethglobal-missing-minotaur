@@ -1,6 +1,6 @@
 
 import React from 'react';
-import styled, { css, keyframes } from "styled-components";
+import styled from "styled-components";
 import HomeComponent from '../../components/Home/HomeComponent';
 import MainHeader from '../../Navigation/MainHeader';
 
@@ -21,7 +21,7 @@ function Home() {
 
     return (
         <MainContainer>
-            <MainHeader btnName='Start Demo Game' url='game' />
+            <MainHeader btnName='Start Demo Game' url='game' onClick={() => { }} />
             <HomeComponent />
         </MainContainer>
     );
