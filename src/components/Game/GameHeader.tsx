@@ -1,7 +1,6 @@
 
 import React from 'react';
-import styled, { css, keyframes } from "styled-components";
-import { NetworkBtn } from '../Button';
+import styled from "styled-components";
 
 
 const GameHeaderContainer = styled.div`
@@ -47,8 +46,6 @@ interface IProps {
 }
 
 function GameHeader() {
-
-
     return (
         <GameHeaderContainer>
             <TitleContainer>

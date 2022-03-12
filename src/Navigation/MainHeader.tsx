@@ -1,7 +1,6 @@
 
 import React from 'react';
-import styled, { css, CSSProperties, keyframes } from "styled-components";
-import { NetworkBtn } from '../components/Button';
+import styled from "styled-components";
 
 
 const GameHeaderContainer = styled.div`
@@ -49,35 +48,14 @@ const WalletContainer = styled.div`
     justify-content: center;
 `;
 
-const GameStartBtn = styled.a`
-    background-color: #000; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    border-radius: 30px;
-`;
-
-
-function NavLink(props: { name: string, urlName: string, style?: CSSProperties }) {
-    const { urlName, name, style } = props;
-    return (
-        <GameStartBtn href={`/${urlName}`} style={style}>
-            {name}
-        </GameStartBtn>
-    );
-}
 
 interface IProps {
     btnName: string;
     url: string;
+    onClick: () => void;
 }
 
 function MainHeader(props: IProps) {
-    const { btnName, url } = props;
 
     return (
         <GameHeaderContainer>
@@ -87,10 +65,11 @@ function MainHeader(props: IProps) {
                 </GameTitle>
             </TitleContainer>
             <WalletContainer>
-                <NavLink
-                    urlName={url}
-                    name={btnName}
-                />
+                <ConnectWalletBtn
+                    onClick={props.onClick}
+                >
+                    Retry
+                </ConnectWalletBtn>
             </WalletContainer>
         </GameHeaderContainer>
     );
