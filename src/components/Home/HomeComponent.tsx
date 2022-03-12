@@ -108,6 +108,7 @@ function HomeComponent() {
                 contractAddress: CONTRACT_ADDRESS,
                 functionName: "mintNFT",
                 abi: CONTRACT_ABI,
+                //TODO: edit ETH value
                 msgValue: Moralis.Units.ETH(0.01),
                 }
             })
@@ -155,7 +156,7 @@ function HomeComponent() {
             isMount = false;
         }
 
-    }, [metamask.status]);
+    }, [metamask]);
 
     return (
         <PathContainer>
