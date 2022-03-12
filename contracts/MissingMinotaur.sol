@@ -14,16 +14,16 @@ contract MissingMinotaur is ERC721, Ownable {
     string public baseURI = "";
     string public baseExtension = ".json";
 
-    uint256 public constant MAX_SUPPLY = 999;
-    uint256 public constant OWNER_MAX_CLAIM = 100;
+    uint256 public constant MAX_SUPPLY = 99;
+    uint256 public constant OWNER_MAX_CLAIM = 10;
   
-    uint256 public mintPrice = 10 ether;
+    uint256 public mintPrice = 0.01 ether;
   
     constructor() ERC721 ("Missing Minotaur", "Missing Minotaur") {}
 
     modifier mintCondition() {
         require(supply.current() <= MAX_SUPPLY, "Max supply exceeded!");
-        require(supply.current() < 899, "invalid claim");
+        require(supply.current() < 89, "invalid claim");
       _;
     }
 
@@ -33,15 +33,15 @@ contract MissingMinotaur is ERC721, Ownable {
 
     function mintNFT() public payable mintCondition {
         require(msg.value >= mintPrice, "Insufficient funds!");
-        _safeMint(msg.sender, supply.current());
         supply.increment();
+        _safeMint(msg.sender, supply.current());
 
     }
 
     function ownerClaim(address _receiver) public onlyOwner {
         require((supply.current() < OWNER_MAX_CLAIM) && (supply.current() < MAX_SUPPLY), "Max supply exceeded!");
-        _safeMint(_receiver, supply.current());
         supply.increment();
+        _safeMint(_receiver, supply.current());
     }
 
     function walletOfOwner(address _owner) public view returns (uint256[] memory) {

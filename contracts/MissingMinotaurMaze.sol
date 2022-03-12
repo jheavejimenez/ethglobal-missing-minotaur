@@ -22,10 +22,15 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
     }
 
     Counters.Counter private supply;
+    Counters.Counter public burned;
 
     uint256 public mintPrice = 1 ether;
 
     uint256 public randomNumber = 50;
+    uint constant TEN_MINS = 600;
+
+    address[] contractAddress;
+    mapping(uint256 => uint256) public mintTimestamps;
 
     constructor() ERC721('Missing Minotaur Maze', 'MMM') {}
 
@@ -55,7 +60,6 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
         return 0;
     }
 
-
     function _generatePuzzle(uint256 seed)
         private
         pure
@@ -83,31 +87,61 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
         return _generatePuzzle(tokenId + randomNumber);
     }
 
+    function currentSupply() public view returns (uint256) {
+        return supply.current() - burned.current();
+    }
+
     function mint() public payable nonReentrant {
         require(
             msg.value >= mintPrice,
             'MMM: Amount of MATIC sent is incorrect.'
         );
-        // TODO: require that player has Missing Minotaur NFT
+        require(balanceOf(msg.sender) == 0, "MMM: You already in game");
+
+        uint256 sum = 0;
+        for (uint256 i = 0; i < contractAddress.length; i++) {
+            sum += ERC721(contractAddress[i]).balanceOf(msg.sender);
+            if (sum > 0) break;
+        }
+        require(sum > 0, "MMM: You don't have an associated NFT with this smart contract.");
 
         supply.increment();
         _safeMint(msg.sender, supply.current());
+
+        mintTimestamps[supply.current()] = block.timestamp;
     }
 
     function burnAndClaimReward(uint256 tokenId, uint256[] memory clicks)
-        public
-        virtual
+    public
+    virtual
     {
         require(_exists(tokenId), 'MMM: Puzzle does not exist.');
         require(
             ownerOf(tokenId) == msg.sender,
             'MMM: burning from incorrect owner'
         );
-        // TODO: require that not more than 20 minutes has passed
+        if (mintTimestamps[tokenId] + TEN_MINS < block.timestamp) {
+            _burn(tokenId);
+            burned.increment();
+            payable(msg.sender).transfer(0.1 ether);
+            return;
+        }
+
         require(clicks.length != 0, 'MMM: Solution required.');
+
         // TODO: require that clicks do solve the puzzle
+
+        require(currentSupply() > 0, "MMM: Fatal error! Supply Tokens == Burned Tokens.");
+
         _burn(tokenId);
-        payable(msg.sender).transfer(1 ether);
+        burned.increment();
+
+        // reward player
+        payable(msg.sender).transfer(address(this).balance / currentSupply());
+    }
+
+    function setcontractAddressPartners(address[] memory newNftContractAddress) public onlyOwner {
+        contractAddress = newNftContractAddress;
     }
 
     function withdraw() public onlyOwner {

@@ -5,7 +5,7 @@ import styled, { css, keyframes } from "styled-components";
 import UserNft from "../../../models/UserNft";
 import TokenUri from "../../../models/TokenUri";
 import axios from "axios";
-import { MORALIS_APP_ID, MORALIS_SERVER_URL } from "../../../constants/moralisConstants";
+import { CONTRACT_ADDRESS, MORALIS_APP_ID, MORALIS_SERVER_URL } from "../../../constants/moralisConstants";
 
 interface IProps {
     src: string;
@@ -35,7 +35,7 @@ export default function GameCard() {
         const polygonNFTs = await Web3Api.account.getNFTsForContract({
             chain: "mumbai",
             address: account!,
-            token_address: "0x1b8896085b5605c5a94a993d1531967969c9946d",
+            token_address: CONTRACT_ADDRESS,
         })
 
         if(polygonNFTs.result && polygonNFTs.result.length > 0){
@@ -86,7 +86,7 @@ export default function GameCard() {
                 }).catch((error: any) => {
                     throw error;
                 }); 
-            });
+        });
 
         setTokenUris(tempTokenUris);
     }
