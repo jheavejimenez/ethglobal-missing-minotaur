@@ -41,6 +41,7 @@ interface IProps {
 function GamePlayComponent(props: IProps) {
     const { game, setGame, roadPattern } = props;
     const [message, setMessage] = useState<string>("Good luck!");
+    const [currentTile, setCurrentTile] = useState<Tile | null>(null);
 
     const [overrideClick, setOverrideClick] = useState<boolean>(false);
 
@@ -99,6 +100,7 @@ function GamePlayComponent(props: IProps) {
                                     onMouseEnter={() => {
                                         handleHover(tile);
                                         setOverrideClick(false);
+                                        setCurrentTile(tile);
                                     }}
                                     onMouseLeave={() => {
                                         if (!overrideClick) {
@@ -106,9 +108,12 @@ function GamePlayComponent(props: IProps) {
                                         }
                                     }}
                                     onClick={() => {
-                                        setOverrideClick(true);
                                         handleOnPressActivate(tile.x, tile.y);
-                                        handleHover(tile);
+                                        if (currentTile && currentTile !== tile){
+                                            setOverrideClick(true);                                        
+                                            handleHover(tile);
+                                        }
+                                        
                                     }}
                                 />
                             ))
