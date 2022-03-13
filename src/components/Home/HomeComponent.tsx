@@ -229,7 +229,7 @@ function HomeComponent() {
                     })
                     .finally(() => {
                         if (valid) {
-                            navigation("../game/start", { replace: true });
+                            navigation("../ethglobal-missing-minotaur/game/start", { replace: true });
                         }
                     });
                 } else {
