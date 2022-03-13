@@ -29,8 +29,8 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
     uint256 public randomNumber = 50;
     uint constant TEN_MINS = 600;
 
-    address[] contractAddress;
     mapping(uint256 => uint256) public mintTimestamps;
+    address[] public contractAddress;
 
     constructor() ERC721('Missing Minotaur Maze', 'MMM') {}
 
@@ -128,9 +128,8 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
         }
 
         require(clicks.length != 0, 'MMM: Solution required.');
-
-        // TODO: require that clicks do solve the puzzle
-
+         // TODO: require that clicks do solve the puzzle
+        require(clicks.length == puzzle(tokenId).puzzleLength);
         require(currentSupply() > 0, "MMM: Fatal error! Supply Tokens == Burned Tokens.");
 
         _burn(tokenId);
