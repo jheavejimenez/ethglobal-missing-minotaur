@@ -11,6 +11,7 @@ import { useParams } from 'react-router';
 import GeneratePattern from '../../controller/GeneratePattern';
 import { Tile } from '../../models/Tile';
 import ZPattern from '../../data/ZPattern';
+import TestActivate from '../../controller/TestActive';
 
 
 const GameContainer = styled.div`
@@ -20,17 +21,19 @@ const GameContainer = styled.div`
 `;
 
 function Game() {
+    const { Moralis, account } = useMoralis();
+
     const { game_type } = useParams();
     const MAX_LENGTH = 6;
-    
-    const { Moralis } = useMoralis();
+    const [testAccount, setTestAccount] = useState<string | null>(account);
+
 
     const [game, setGame] = useState<Grid>({
         clicksLength: 1,
         grid: [],
-        length: 4,
+        length: MAX_LENGTH,
         level: 1,
-        width: 4
+        width: MAX_LENGTH
     });
 
     const [clicks, setClicks] = useState<Array<number>>(
@@ -47,6 +50,7 @@ function Game() {
         const tempCoordinate: Array<{ x: number, y: number }> = [];
         let tilesFlat: any[] = [];
 
+        // set coordinates to true
         clicks.map((data: number) => {
             tempCoordinate.push({
                 x: Math.floor(data / MAX_LENGTH),
@@ -55,40 +59,64 @@ function Game() {
             tilesFlat.push([Math.floor(data / MAX_LENGTH), data % MAX_LENGTH]);
         });
 
+        console.log(tempCoordinate);
+
+        // initial puzzle to false
         const initialPuzzle = TileSet(MAX_LENGTH, MAX_LENGTH);
-        // generate pattern
-        const pattern = GeneratePattern(TileSet(MAX_LENGTH, MAX_LENGTH), tempCoordinate);
-        // attach z pattern
-        setRoadPattern(ZPattern());
-        // change pattern -> z pattern ZPattern()
+
         const newGame = {
             clicksLength: clicks.length,
-            grid: MergePattern(initialPuzzle, pattern),
+            grid: initialPuzzle,
             length: MAX_LENGTH,
             width: MAX_LENGTH,
             level: 1
         }
-
-        setGame(newGame);
-
-        SetClicks({
-            game: newGame,
-            setState: setGame,
-            tilesFlat: tilesFlat
+        
+        const test = TestActivate({
+            game: newGame, 
+            length:  MAX_LENGTH, 
+            width: MAX_LENGTH, 
+            coordinates: tempCoordinate
         });
+
+        // generate pattern
+        // const pattern = GeneratePattern(initialPuzzle, tempCoordinate);
+        // attach z pattern
+        setRoadPattern(ZPattern());
+        // change pattern -> z pattern ZPattern()
+        // console.log(tempCoordinate);
+        
+        
+        test.grid = [...MergePattern(test.grid, ZPattern())];
+        setGame(test);
+
+        // SetClicks({
+        //     game: newGame,
+        //     setState: setGame,
+        //     tilesFlat: tilesFlat
+        // });
+
+
     }
 
 
     const handleFetchGame = async () => {
         const newWeb3Provider = await Moralis.enableWeb3();
         if(newWeb3Provider){
+            console.log(testAccount);
+            const tokenId = await Moralis.executeFunction({
+                contractAddress: CONTRACT_GAME_ADDRESS,
+                functionName: "getOwnerOfTokenId",
+                abi: CONTRACT_GAME_ABI,
+                params: {owner : testAccount}
+            });
             await Moralis.executeFunction({
                 contractAddress: CONTRACT_GAME_ADDRESS,
                 functionName: "puzzle",
                 abi: CONTRACT_GAME_ABI,
-                params: {tokenId : 1}
+                params: {tokenId : tokenId}
             }).then((response:any) => {
-                console.log(response);
+
                 let tempClicks: number[] = [];
                 
                 response.clicks.map((value: any) => {

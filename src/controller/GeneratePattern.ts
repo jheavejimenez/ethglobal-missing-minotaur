@@ -5,6 +5,5 @@ export default function GeneratePattern(tiles: Array<Array<Tile>>, coordinates: 
     coordinates.map((coordinate: { x: number, y: number }) => {
         newTiles[coordinate.y][coordinate.x].activated = true;
     });
-    console.log(coordinates);
     return newTiles;
 }
