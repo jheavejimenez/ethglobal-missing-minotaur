@@ -4,7 +4,14 @@ import styled from "styled-components";
 import MainHeader from '../../Navigation/MainHeader';
 import GameMainContainer from '../../components/Game/GameMainContainer';
 import { Grid } from '../../models/Grid';
-import { SetClicks, TileSet } from '../../controller';
+import { MergePattern, SetClicks, TileSet } from '../../controller';
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../../constants/moralisConstants';
+import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from "react-moralis";
+import { useParams } from 'react-router';
+import GeneratePattern from '../../controller/GeneratePattern';
+import { Tile } from '../../models/Tile';
+import ZPattern from '../../data/ZPattern';
+
 
 const GameContainer = styled.div`
     flex: 1;
@@ -13,7 +20,12 @@ const GameContainer = styled.div`
 `;
 
 function Game() {
+    const { game_type } = useParams();
+    const MAX_LENGTH = 6;
 
+    const web3 = useWeb3ExecuteFunction();
+
+    const { Moralis } = useMoralis();
 
     const [game, setGame] = useState<Grid>({
         clicksLength: 1,
@@ -23,136 +35,83 @@ function Game() {
         width: 4
     });
 
-    const roadPattern = [ // one cross
+    const [clicks, setClicks] = useState<Array<number>>(
         [
-            // FIRST ARRAY
-            {
-                'activated': true,
-                'x': 0,
-                'y': 0,
-                'isOver': false
-            },
-            {
-                'activated': true,
-                'x': 1,
-                'y': 0,
-                'isOver': false
-            }
-            , {
-                'activated': true,
-                'x': 2,
-                'y': 0,
-                'isOver': false
-            }, {
-                'activated': true,
-                'x': 3,
-                'y': 0,
-                'isOver': false
-            },
-        ],
-        // SECOND ARRAY
-        [
-            {
-                'activated': false,
-                'x': 0,
-                'y': 1,
-                'isOver': false
-            },
-            {
-                'activated': false,
-                'x': 1,
-                'y': 1,
-                'isOver': false
-            }
-            , {
-                'activated': true,
-                'x': 2,
-                'y': 1,
-                'isOver': false
-            }, {
-                'activated': false,
-                'x': 3,
-                'y': 1,
-                'isOver': false
-            },
-        ],
-        [
-            //  THIRD ARRAY
-            {
-                'activated': false,
-                'x': 0,
-                'y': 2,
-                'isOver': false
-            },
-            {
-                'activated': true,
-                'x': 1,
-                'y': 2,
-                'isOver': false
-            }
-            , {
-                'activated': false,
-                'x': 2,
-                'y': 2,
-                'isOver': false
-            }, {
-                'activated': false,
-                'x': 3,
-                'y': 2,
-                'isOver': false
-            },
-        ],
-        [
-            // FOURTH ARRAY
-            {
-                'activated': true,
-                'x': 0,
-                'y': 3,
-                'isOver': false
-            },
-            {
-                'activated': true,
-                'x': 1,
-                'y': 3,
-                'isOver': false
-            }
-            , {
-                'activated': true,
-                'x': 2,
-                'y': 3,
-                'isOver': false
-            }, {
-                'activated': true,
-                'x': 3,
-                'y': 3,
-                'isOver': false
-            },
-        ],
-    ];
+            15,
+            10,
+            5,
+        ]
+    );
 
+    const [roadPattern, setRoadPattern] = useState<Array<Array<Tile>> | null>(null);
 
+    const setupGame = async (clicks: number[]) => {
+        const tempCoordinate: Array<{ x: number, y: number }> = [];
+        let tilesFlat: any[] = [];
 
-    const setupGame = async () => {
-        const { length, width } = game;
+        clicks.map((data: number) => {
+            tempCoordinate.push({
+                x: Math.floor(data / MAX_LENGTH),
+                y: data % MAX_LENGTH
+            });
+            tilesFlat.push([Math.floor(data / MAX_LENGTH), data % MAX_LENGTH]);
+        });
+
+        const initialPuzzle = TileSet(MAX_LENGTH, MAX_LENGTH);
+        // generate pattern
+        const pattern = GeneratePattern(TileSet(MAX_LENGTH, MAX_LENGTH), tempCoordinate);
+        // attach z pattern
+        setRoadPattern(ZPattern());
+        // change pattern -> z pattern ZPattern()
         const newGame = {
-            clicksLength: 1,
-            grid: TileSet(roadPattern, length, width),
-            length: 4,
-            width: 4,
+            clicksLength: clicks.length,
+            grid: MergePattern(initialPuzzle, ZPattern()),
+            length: MAX_LENGTH,
+            width: MAX_LENGTH,
             level: 1
         }
+
         setGame(newGame);
 
         SetClicks({
             game: newGame,
-            setState: setGame
+            setState: setGame,
+            tilesFlat: tilesFlat
         });
     }
 
-    useEffect(() => {
-        setupGame();
-    }, []);
+    const handleFetchGame = async () => {
+        await web3.fetch({
+            params: {
+                contractAddress: CONTRACT_ADDRESS,
+                functionName: "puzzle",
+                abi: CONTRACT_ABI,
+                //TODO: edit ETH value
+                msgValue: Moralis.Units.ETH(0.01),
+            }
+        })
+            .then((response) => {
+                console.log("test", response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
 
+    useEffect(() => {
+        if (game_type) {
+            if (game_type === 'demo') {
+                let clicks = [
+                    15,
+                    10,
+                    5,
+                ];
+                setupGame(clicks);
+            } else {
+                handleFetchGame();
+            }
+        }
+    }, []);
 
     return (
         <GameContainer>
@@ -160,14 +119,17 @@ function Game() {
                 btnName='Retry'
                 url='game'
                 onClick={() => {
-                    setupGame();
+                    setupGame(clicks);
                 }}
             />
-            <GameMainContainer
-                game={game}
-                pattern={roadPattern}
-                setGame={setGame}
-            />
+            {roadPattern &&
+                <GameMainContainer
+                    game={game}
+                    pattern={roadPattern}
+                    setGame={setGame}
+                />
+
+            }
         </GameContainer>
     );
 }

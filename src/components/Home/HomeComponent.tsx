@@ -1,12 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { NetworkBtn } from '../Button';
-import { chainId, chainName, currencyName, currencySymbol, rpcUrl, blockExplorerUrl, CONTRACT_ADDRESS, CONTRACT_ABI } from '../../constants/moralisConstants'
-import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
+import { chainId, chainName, currencyName, currencySymbol, rpcUrl, blockExplorerUrl, CONTRACT_ADDRESS, CONTRACT_ABI, MORALIS_SERVER_URL, MORALIS_APP_ID } from '../../constants/moralisConstants'
+import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from "react-moralis";
 import detectEthereumProvider from '@metamask/detect-provider';
 import GameCard from '../../components/Game/Card/GameCard';
 import { useMetaMask } from "metamask-react";
 import Logo from "../../assets/images/polygonlogo.png";
+import UserNft from "../../models/UserNft";
+import TokenUri from "../../models/TokenUri";
+import axios from "axios";
+import NavLink from "../Button/GameStartBtn";
 
 const PathContainer = styled.div`
     display: flex;
@@ -25,7 +29,7 @@ const CardListInnerContainer = styled.div`
     display: flex;
     flex: 1,
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
 `;
 
@@ -68,6 +72,79 @@ function HomeComponent() {
     const [walletAddress, setWalletAddress] = useState<string>("");
     const metamask = useMetaMask();
     const web3 = useWeb3ExecuteFunction();
+    Moralis.start({ serverUrl: MORALIS_SERVER_URL, appId: MORALIS_APP_ID })
+
+    const Web3Api = useMoralisWeb3Api();
+    const [nfts, setNfts] = useState<Array<UserNft> | null>(null);
+    const [tokenUris, setTokenUris] = useState<Array<TokenUri> | null>(null);
+
+    const fetchNFTsForContract = async () => {
+        const polygonNFTs = await Web3Api.account.getNFTsForContract({
+            chain: "mumbai",
+            address: account!,
+            token_address: CONTRACT_ADDRESS,
+        })
+
+        if (polygonNFTs.result && polygonNFTs.result.length > 0) {
+            const fetchNFTS = polygonNFTs.result.map((response: any, index: number) => {
+                return new UserNft(
+                    response.amount,
+                    response.block_number,
+                    response.block_number_minted,
+                    response.contract_type,
+                    response.frozen,
+                    response.is_valid,
+                    response.metadata,
+                    response.name,
+                    response.owner_of,
+                    response.symbol,
+                    response.synced_at,
+                    response.syncing,
+                    response.token_address,
+                    response.token_id,
+                    response.token_uri,
+                )
+            });
+
+            setNfts(fetchNFTS);
+            return handleGetTokenUri(fetchNFTS);
+        }
+    };
+
+    const handleGetTokenUri = async (data: Array<UserNft>) => {
+        const tempTokenUris: Array<TokenUri> = [];
+        const gateWayURL = "https://gateway.moralisipfs.com/ipfs";
+        let promises: any[] = [];
+
+        console.log("test");
+
+        data.map((nft: UserNft, index: number) => {
+            promises.push(
+                axios.get(nft.token_uri)
+                    .then((response: any) => {
+                        const data = response.data;
+                        const newTokenUri = new TokenUri(
+                            data.name,
+                            data.description,
+                            data.image,
+                            data.dna,
+                            data.edition,
+                            data.date,
+                            data.attributes,
+                            data.compiler,
+                        );
+                        newTokenUri.image = `${gateWayURL}${newTokenUri.image.slice(6, newTokenUri.image.length)}`;
+                        tempTokenUris.push(newTokenUri);
+                    }).catch((error: any) => {
+                        throw error;
+                    })
+            );
+        });
+
+        Promise.all(promises).then(() => {
+            setTokenUris(tempTokenUris);
+        });
+    }
 
     const SwitchNetwork = async () => {
         const provider = await detectEthereumProvider();
@@ -110,8 +187,8 @@ function HomeComponent() {
                 abi: CONTRACT_ABI,
                 //TODO: edit ETH value
                 msgValue: Moralis.Units.ETH(0.01),
-                }
-            })
+            }
+        })
             .then((response) => {
                 console.log(response);
             })
@@ -127,6 +204,7 @@ function HomeComponent() {
                     SwitchNetwork();
                     console.log("logged in user:", user);
                     chainIdSlice(user!.get("ethAddress"));
+                    fetchNFTsForContract();
                 })
                 .catch(function (error) { console.log(error); });
         }
@@ -138,7 +216,6 @@ function HomeComponent() {
     }
 
     function handleGetUser() {
-        console.log(metamask);
         if (metamask.account) {
             chainIdSlice(metamask.account);
         }
@@ -156,29 +233,37 @@ function HomeComponent() {
             isMount = false;
         }
 
-    }, [metamask]);
+    }, [metamask.status]);
+
+
+    useEffect(() => {
+        fetchNFTsForContract();
+    }, []);
 
     return (
         <PathContainer>
             <CardListContainer>
                 {isAuthenticated &&
-                    <WalletAddressContainer>
-                        <WalletAddressText>
-                            <PolygonLogo />
-                            Wallet: {
-                                metamask.status === "initializing" ?
-                                    "Initializing" : metamask.status === "connected" ?
-                                        walletAddress : "Not Connected"
-                            }
-                        </WalletAddressText>
-                    </WalletAddressContainer>
+                    <React.Fragment>
+                        <NavLink
+                            urlName={'game/start'}
+                            name={'Game start'}
+                        />
+                        <WalletAddressContainer>
+                            <WalletAddressText>
+                                <PolygonLogo />
+                                Wallet: {
+                                    metamask.status === "initializing" ?
+                                        "Initializing" : metamask.status === "connected" ?
+                                            walletAddress : "Not Connected"
+                                }
+                            </WalletAddressText>
+                        </WalletAddressContainer>
+                    </React.Fragment>
                 }
+
                 <CardListInnerContainer>
-                    <GameCard />
-                    <GameCard />
-                    <GameCard />
-                    <GameCard />
-                    <GameCard />
+                    <GameCard tokenUris={tokenUris!} />
                 </CardListInnerContainer>
             </CardListContainer>
 

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import styled, { CSSProperties } from "styled-components";
+import NavLink from '../components/Button/GameStartBtn';
 
 
 const GameHeaderContainer = styled.div`
@@ -28,18 +29,6 @@ const TitleContainer = styled.div`
     display: flex;
     flex: 1;
     justify-content: center;
-`
-
-const ConnectWalletBtn = styled.button`
-    background-color: #000; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    border-radius: 30px;
 `;
 
 const WalletContainer = styled.div`
@@ -49,14 +38,8 @@ const WalletContainer = styled.div`
 `;
 
 
-interface IProps {
-    btnName: string;
-    url: string;
-    onClick: () => void;
-}
-
-const GameStartBtn = styled.a`
-    background-color: #000; /* Green */
+const RetryBtn = styled.button`
+    background-color: #000;
     border: none;
     color: white;
     padding: 15px 32px;
@@ -67,17 +50,15 @@ const GameStartBtn = styled.a`
     border-radius: 30px;
 `;
 
-function NavLink(props: { name: string, urlName: string, style?: CSSProperties }) {
-    const { urlName, name, style } = props;
-    return (
-        <GameStartBtn href={`/${urlName}`} style={style}>
-            {name}
-        </GameStartBtn>
-    );
+interface IProps {
+    btnName: string;
+    url: string;
+    onClick?: () => void;
 }
 
+
 function MainHeader(props: IProps) {
-    const { btnName, url } = props;
+    const { btnName, url, onClick } = props;
     return (
         <GameHeaderContainer>
             <TitleContainer>
@@ -86,10 +67,18 @@ function MainHeader(props: IProps) {
                 </GameTitle>
             </TitleContainer>
             <WalletContainer>
-            <NavLink
-                urlName={url}
-                name={btnName}
-            />
+                {onClick ?
+                    <RetryBtn
+                        onClick={onClick}
+                    >
+                        {btnName}
+                    </RetryBtn>
+                    :
+                    <NavLink
+                        urlName={url}
+                        name={btnName}
+                    />
+                }
             </WalletContainer>
         </GameHeaderContainer>
     );
