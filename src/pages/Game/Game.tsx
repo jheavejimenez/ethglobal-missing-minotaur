@@ -25,7 +25,7 @@ function Game() {
 
     const web3 = useWeb3ExecuteFunction();
 
-    const { authenticate, isAuthenticated, isAuthenticating, logout, Moralis, account } = useMoralis();
+    const { Moralis } = useMoralis();
 
     const [game, setGame] = useState<Grid>({
         clicksLength: 1,
@@ -34,19 +34,20 @@ function Game() {
         level: 1,
         width: 4
     });
-    const [roadPattern, setRoadPattern] = useState<Array<Array<Tile>> | null>(null);
 
-
-
-    const setupGame = async () => {
-        const tempCoordinate: Array<{ x: number, y: number }> = [];
-        let tilesFlat: any[] = [];
-        let clicks = [
+    const [clicks, setClicks] = useState<Array<number>>(
+        [
             15,
             10,
             5,
+        ]
+    );
 
-        ];
+    const [roadPattern, setRoadPattern] = useState<Array<Array<Tile>> | null>(null);
+
+    const setupGame = async (clicks: number[]) => {
+        const tempCoordinate: Array<{ x: number, y: number }> = [];
+        let tilesFlat: any[] = [];
 
         clicks.map((data: number) => {
             tempCoordinate.push({
@@ -98,10 +99,17 @@ function Game() {
     }
 
     useEffect(() => {
-        if (game_type && game_type === 'demo') {
-            setupGame();
-        } else {
-            handleFetchGame();
+        if (game_type) {
+            if (game_type === 'demo') {
+                let clicks = [
+                    15,
+                    10,
+                    5,
+                ];
+                setupGame(clicks);
+            } else {
+                handleFetchGame();
+            }
         }
     }, []);
 
@@ -111,7 +119,7 @@ function Game() {
                 btnName='Retry'
                 url='game'
                 onClick={() => {
-                    setupGame();
+                    setupGame(clicks);
                 }}
             />
             {roadPattern &&

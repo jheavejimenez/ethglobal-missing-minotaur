@@ -29,10 +29,17 @@ const TitleContainer = styled.div`
     display: flex;
     flex: 1;
     justify-content: center;
-`
+`;
 
-const ConnectWalletBtn = styled.button`
-    background-color: #000; /* Green */
+const WalletContainer = styled.div`
+    display: flex;
+    flex: 0.5;
+    justify-content: center;
+`;
+
+
+const RetryBtn = styled.button`
+    background-color: #000;
     border: none;
     color: white;
     padding: 15px 32px;
@@ -43,22 +50,15 @@ const ConnectWalletBtn = styled.button`
     border-radius: 30px;
 `;
 
-const WalletContainer = styled.div`
-    display: flex;
-    flex: 0.5;
-    justify-content: center;
-`;
-
-
 interface IProps {
     btnName: string;
     url: string;
-    onClick: () => void;
+    onClick?: () => void;
 }
 
 
 function MainHeader(props: IProps) {
-    const { btnName, url } = props;
+    const { btnName, url, onClick } = props;
     return (
         <GameHeaderContainer>
             <TitleContainer>
@@ -67,10 +67,18 @@ function MainHeader(props: IProps) {
                 </GameTitle>
             </TitleContainer>
             <WalletContainer>
-                <NavLink
-                    urlName={url}
-                    name={btnName}
-                />
+                {onClick ?
+                    <RetryBtn
+                        onClick={onClick}
+                    >
+                        {btnName}
+                    </RetryBtn>
+                    :
+                    <NavLink
+                        urlName={url}
+                        name={btnName}
+                    />
+                }
             </WalletContainer>
         </GameHeaderContainer>
     );
