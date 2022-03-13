@@ -16,7 +16,7 @@ const GameStartBtn = styled.a`
 export default function NavLink(props: { name: string, urlName: string, style?: CSSProperties }) {
     const { urlName, name, style } = props;
     return (
-        <GameStartBtn href={`/${urlName}`} style={style}>
+        <GameStartBtn href={`/ethglobal-missing-minotaur/${urlName}`} style={style}>
             {name}
         </GameStartBtn>
     );
