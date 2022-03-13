@@ -10,6 +10,7 @@ import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from "react-mor
 import { useParams } from 'react-router';
 import GeneratePattern from '../../controller/GeneratePattern';
 import { Tile } from '../../models/Tile';
+import ZPattern from '../../data/ZPattern';
 
 
 const GameContainer = styled.div`
@@ -35,12 +36,6 @@ function Game() {
     });
     const [roadPattern, setRoadPattern] = useState<Array<Array<Tile>> | null>(null);
 
-    const testPattern = [
-        {
-            "activated": false,
-
-        }
-    ];
 
 
     const setupGame = async () => {
@@ -50,14 +45,7 @@ function Game() {
             15,
             10,
             5,
-            16,
-            8,
-            22,
-            29,
-            16,
-            8,
-            22,
-            10,
+
         ];
 
         clicks.map((data: number) => {
@@ -72,11 +60,11 @@ function Game() {
         // generate pattern
         const pattern = GeneratePattern(TileSet(MAX_LENGTH, MAX_LENGTH), tempCoordinate);
         // attach z pattern
-        setRoadPattern(pattern);
+        setRoadPattern(ZPattern());
         // change pattern -> z pattern ZPattern()
         const newGame = {
             clicksLength: clicks.length,
-            grid: MergePattern(initialPuzzle, pattern),
+            grid: MergePattern(initialPuzzle, ZPattern()),
             length: MAX_LENGTH,
             width: MAX_LENGTH,
             level: 1
