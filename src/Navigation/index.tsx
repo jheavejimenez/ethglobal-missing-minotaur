@@ -23,7 +23,7 @@ export default function Navigation() {
         <MainContainer>
             <Routes>
                 <Route path="/ethglobal-missing-minotaur/" element={<Home />} />
-                <Route path="/ethglobal-missing-minotaur/game/:game_type" element={<Game />} />
+                <Route path="/game/:game_type" element={<Game />} />
             </Routes>
         </MainContainer>
 

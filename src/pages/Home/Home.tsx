@@ -21,7 +21,7 @@ function Home() {
 
     return (
         <MainContainer>
-            <MainHeader btnName='Start Demo Game' url='/ethglobal-missing-minotaur/game/demo' />
+            <MainHeader btnName='Start Demo Game' url='../game/demo' />
             <HomeComponent />
         </MainContainer>
     );
