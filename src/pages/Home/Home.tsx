@@ -21,7 +21,7 @@ function Home() {
 
     return (
         <MainContainer>
-            <MainHeader btnName='Start Demo Game' url='game' onClick={() => { }} />
+            <MainHeader btnName='Start Demo Game' url='game/demo' onClick={() => { }} />
             <HomeComponent />
         </MainContainer>
     );

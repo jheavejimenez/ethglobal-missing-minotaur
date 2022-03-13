@@ -10,6 +10,7 @@ import Logo from "../../assets/images/polygonlogo.png";
 import UserNft from "../../models/UserNft";
 import TokenUri from "../../models/TokenUri";
 import axios from "axios";
+import NavLink from "../Button/GameStartBtn";
 
 const PathContainer = styled.div`
     display: flex;
@@ -244,6 +245,10 @@ function HomeComponent() {
             <CardListContainer>
                 {isAuthenticated &&
                     <React.Fragment>
+                        <NavLink
+                            urlName={'game/start'}
+                            name={'Game start'}
+                        />
                         <WalletAddressContainer>
                             <WalletAddressText>
                                 <PolygonLogo />

@@ -8,8 +8,8 @@ interface IHoverProps {
 }
 
 const Tile = styled.div<IHoverProps>`
-    height: 100px;
-    width: 100px;
+    height: 75px;
+    width: 75px;
     border: 1px solid black;
     background-image: url("${ActiveTile}");
     background-size: cover;
