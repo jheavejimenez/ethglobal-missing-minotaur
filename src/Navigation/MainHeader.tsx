@@ -1,6 +1,7 @@
 
 import React from 'react';
 import styled, { CSSProperties } from "styled-components";
+import NavLink from '../components/Button/GameStartBtn';
 
 
 const GameHeaderContainer = styled.div`
@@ -55,26 +56,6 @@ interface IProps {
     onClick: () => void;
 }
 
-const GameStartBtn = styled.a`
-    background-color: #000; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    border-radius: 30px;
-`;
-
-function NavLink(props: { name: string, urlName: string, style?: CSSProperties }) {
-    const { urlName, name, style } = props;
-    return (
-        <GameStartBtn href={`/${urlName}`} style={style}>
-            {name}
-        </GameStartBtn>
-    );
-}
 
 function MainHeader(props: IProps) {
     const { btnName, url } = props;
@@ -86,10 +67,10 @@ function MainHeader(props: IProps) {
                 </GameTitle>
             </TitleContainer>
             <WalletContainer>
-            <NavLink
-                urlName={url}
-                name={btnName}
-            />
+                <NavLink
+                    urlName={url}
+                    name={btnName}
+                />
             </WalletContainer>
         </GameHeaderContainer>
     );

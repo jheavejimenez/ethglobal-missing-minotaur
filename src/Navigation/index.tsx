@@ -23,7 +23,7 @@ export default function Navigation() {
         <MainContainer>
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/game" element={<Game />} />
+                <Route path="/game/:game_type" element={<Game />} />
             </Routes>
         </MainContainer>
 

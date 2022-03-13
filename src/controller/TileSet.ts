@@ -1,7 +1,7 @@
 import { Tile } from "../models/Tile";
 import mergePattern from "./MergePattern";
 
-export default function TileSet(roadPattern: Array<Array<Tile>>, length: number, width: number) {
+export default function TileSet(length: number, width: number) {
     let i: number;
     let j: number;
     let row: Array<Tile>;
@@ -24,5 +24,5 @@ export default function TileSet(roadPattern: Array<Array<Tile>>, length: number,
         tempGrid.push(row);
     }
 
-    return mergePattern(tempGrid, roadPattern);
+    return tempGrid;
 }

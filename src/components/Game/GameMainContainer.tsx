@@ -28,6 +28,7 @@ interface IProps {
 
 function GameMainContainer(props: IProps) {
     const { game, pattern, setGame } = props;
+
     return (
         <MainContainer>
             <GamePlayComponent
