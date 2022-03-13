@@ -1,4 +1,4 @@
-import Web3 from "web3"; 
+import Web3 from "web3";
 import React, { useEffect, useState } from 'react';
 import { useMoralisWeb3Api, useMoralis } from "react-moralis";
 import styled, { css, keyframes } from "styled-components";
@@ -13,9 +13,9 @@ interface IProps {
 
 const CardContainer = styled.img<IProps>`
     display: flex;
-    height: 400px;
-    width: 400px;
-    border: 1px solid white;
+    height: 300px;
+    width: 300px;
+    border-radius: 10px;
 `;
 
 interface IGameCardProps {
@@ -23,13 +23,13 @@ interface IGameCardProps {
 }
 
 export default function GameCard(props: IGameCardProps) {
-    console.log(props.tokenUris);
+
     return (
         <React.Fragment>
-            { props.tokenUris && props.tokenUris.map((tokenUri: TokenUri, index: number) => (
+            {props.tokenUris && props.tokenUris.map((tokenUri: TokenUri, index: number) => (
                 <CardContainer
-                key={index}
-                src={`${tokenUri.image}`}
+                    key={index}
+                    src={`${tokenUri.image}`}
                 >
                 </CardContainer>
             ))}
