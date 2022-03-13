@@ -60,6 +60,15 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
         return 0;
     }
 
+    // function shuffle(Coordinates[] memory obstacles, uint256 length, uint256 seed) internal pure {
+    //     for (uint256 i = 0; i < length; i++) {
+    //         uint256 n = i + uint256(keccak256(abi.encodePacked(seed))) % (length - i);
+    //         Coordinates memory temp = obstacles[n];
+    //         obstacles[n] = obstacles[i];
+    //         obstacles[i] = temp;
+    //     }
+    // }
+
     function _generatePuzzle(uint256 seed)
         private
         pure

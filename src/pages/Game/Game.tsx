@@ -5,8 +5,8 @@ import MainHeader from '../../Navigation/MainHeader';
 import GameMainContainer from '../../components/Game/GameMainContainer';
 import { Grid } from '../../models/Grid';
 import { MergePattern, SetClicks, TileSet } from '../../controller';
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../../constants/moralisConstants';
-import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from "react-moralis";
+import { CONTRACT_ABI, CONTRACT_ADDRESS, CONTRACT_GAME_ABI, CONTRACT_GAME_ADDRESS } from '../../constants/moralisConstants';
+import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import { useParams } from 'react-router';
 import GeneratePattern from '../../controller/GeneratePattern';
 import { Tile } from '../../models/Tile';
@@ -22,9 +22,7 @@ const GameContainer = styled.div`
 function Game() {
     const { game_type } = useParams();
     const MAX_LENGTH = 6;
-
-    const web3 = useWeb3ExecuteFunction();
-
+    
     const { Moralis } = useMoralis();
 
     const [game, setGame] = useState<Grid>({
@@ -65,7 +63,7 @@ function Game() {
         // change pattern -> z pattern ZPattern()
         const newGame = {
             clicksLength: clicks.length,
-            grid: MergePattern(initialPuzzle, ZPattern()),
+            grid: MergePattern(initialPuzzle, pattern),
             length: MAX_LENGTH,
             width: MAX_LENGTH,
             level: 1
@@ -80,22 +78,30 @@ function Game() {
         });
     }
 
+
     const handleFetchGame = async () => {
-        await web3.fetch({
-            params: {
-                contractAddress: CONTRACT_ADDRESS,
+        const newWeb3Provider = await Moralis.enableWeb3();
+        if(newWeb3Provider){
+            await Moralis.executeFunction({
+                contractAddress: CONTRACT_GAME_ADDRESS,
                 functionName: "puzzle",
-                abi: CONTRACT_ABI,
-                //TODO: edit ETH value
-                msgValue: Moralis.Units.ETH(0.01),
-            }
-        })
-            .then((response) => {
-                console.log("test", response);
-            })
-            .catch(error => {
-                console.log(error);
+                abi: CONTRACT_GAME_ABI,
+                params: {tokenId : 1}
+            }).then((response:any) => {
+                console.log(response);
+                let tempClicks: number[] = [];
+                
+                response.clicks.map((value: any) => {
+                    tempClicks.push(parseInt(value._hex, 16));
+                });
+
+                setClicks(tempClicks);
+                setupGame(tempClicks);
+
+
             });
+        }
+        
     }
 
     useEffect(() => {
