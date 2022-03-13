@@ -30,6 +30,8 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
     uint constant TEN_MINS = 600;
 
     mapping(uint256 => uint256) public mintTimestamps;
+    mapping(address => uint256) private _ownerOfTokenId;
+
     address[] public contractAddress;
 
     constructor() ERC721('Missing Minotaur Maze', 'MMM') {}
@@ -91,6 +93,12 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
         return supply.current() - burned.current();
     }
 
+    function getOwnerOfTokenId(address owner) public view virtual returns (uint256) {
+        uint256 tokenId = _ownerOfTokenId[owner];
+        require(_exists(tokenId), "ERC721: owner query for nonexistent token");
+        return tokenId;
+    }
+
     function mint() public payable nonReentrant {
         require(
             msg.value >= mintPrice,
@@ -107,6 +115,7 @@ contract MissingMinotaurMaze is ERC721, ReentrancyGuard, Ownable {
 
         supply.increment();
         _safeMint(msg.sender, supply.current());
+         _ownerOfTokenId[msg.sender] = supply.current();
 
         mintTimestamps[supply.current()] = block.timestamp;
     }

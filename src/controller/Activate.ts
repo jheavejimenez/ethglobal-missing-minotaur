@@ -32,6 +32,6 @@ export default function Activate(props: IProps) {
         tile = grid[y][x + 1];
         tile.activated = !tile.activated;
     }
-
+    game.grid = grid;
     props.setState(game);
 };

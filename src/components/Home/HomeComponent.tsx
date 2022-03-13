@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { NetworkBtn } from '../Button';
-import { chainId, chainName, currencyName, currencySymbol, rpcUrl, blockExplorerUrl, CONTRACT_ADDRESS, CONTRACT_ABI, MORALIS_SERVER_URL, MORALIS_APP_ID } from '../../constants/moralisConstants'
+import { chainId, chainName, currencyName, currencySymbol, rpcUrl, blockExplorerUrl, CONTRACT_ADDRESS, CONTRACT_ABI, MORALIS_SERVER_URL, MORALIS_APP_ID, CONTRACT_GAME_ADDRESS, CONTRACT_GAME_ABI } from '../../constants/moralisConstants'
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from "react-moralis";
 import detectEthereumProvider from '@metamask/detect-provider';
 import GameCard from '../../components/Game/Card/GameCard';
@@ -11,6 +11,8 @@ import UserNft from "../../models/UserNft";
 import TokenUri from "../../models/TokenUri";
 import axios from "axios";
 import NavLink from "../Button/GameStartBtn";
+import { GameStakeBtn } from "../Button/GameStakeBtn";
+import { useNavigate } from "react-router-dom";
 
 const PathContainer = styled.div`
     display: flex;
@@ -68,6 +70,7 @@ const PolygonLogo = styled.img.attrs({
   `;
 
 function HomeComponent() {
+    const navigation = useNavigate();
     const { authenticate, isAuthenticated, isAuthenticating, logout, Moralis, account } = useMoralis();
     const [walletAddress, setWalletAddress] = useState<string>("");
     const metamask = useMetaMask();
@@ -196,6 +199,26 @@ function HomeComponent() {
                 console.log(error);
             });
     }
+    const stakeMatic = async () => {
+        console.log('stake')
+        await web3.fetch({
+            params: {
+                contractAddress: CONTRACT_GAME_ADDRESS,
+                functionName: "mint",
+                abi: CONTRACT_GAME_ABI,
+                //TODO: edit ETH value
+                msgValue: Moralis.Units.ETH(0.01),
+            }
+        })
+            .then((response) => {
+                console.log(response);
+                navigation("../game/start", { replace: true })
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
 
     const login = async () => {
         if (!isAuthenticated) {
@@ -245,10 +268,11 @@ function HomeComponent() {
             <CardListContainer>
                 {isAuthenticated &&
                     <React.Fragment>
-                        <NavLink
-                            urlName={'game/start'}
-                            name={'Game start'}
-                        />
+                        <GameStakeBtn
+                            onClick={stakeMatic}
+                        >
+                            Game Start
+                        </GameStakeBtn>
                         <WalletAddressContainer>
                             <WalletAddressText>
                                 <PolygonLogo />
