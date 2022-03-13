@@ -6,14 +6,14 @@ interface IProps {
     game: Grid;
     length: number;
     width: number;
-    coordinates: Array<{x: number, y: number}>;
+    coordinates: Array<{ x: number, y: number }>;
 }
 
-export default function TestActivate(props: IProps) {
+export default function SetActivate(props: IProps) {
     const { game, length, width, coordinates } = props;
-    
+
     for (let index = 0; index < coordinates.length; index++) {
-        const {x, y } = coordinates[index];
+        const { x, y } = coordinates[index];
         let tile = game.grid[y][x];
         handleHover(tile, game);
     }
