@@ -14,16 +14,16 @@ contract MissingMinotaur is ERC721, Ownable {
     string public baseURI = "";
     string public baseExtension = ".json";
 
-    uint256 public constant MAX_SUPPLY = 999;
+    uint256 public constant MAX_SUPPLY = 499;
     uint256 public constant OWNER_MAX_CLAIM = 100;
   
-    uint256 public mintPrice = 10 ether;
+    uint256 public mintPrice = 0.01 ether;
   
     constructor() ERC721 ("Missing Minotaur", "Missing Minotaur") {}
 
     modifier mintCondition() {
         require(supply.current() <= MAX_SUPPLY, "Max supply exceeded!");
-        require(supply.current() < 899, "invalid claim");
+        require(supply.current() < 499, "invalid claim");
       _;
     }
 

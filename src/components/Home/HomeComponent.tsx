@@ -119,8 +119,6 @@ function HomeComponent() {
         const gateWayURL = "https://gateway.moralisipfs.com/ipfs";
         let promises: any[] = [];
 
-        console.log("test");
-
         data.map((nft: UserNft, index: number) => {
             promises.push(
                 axios.get(nft.token_uri)
@@ -199,24 +197,63 @@ function HomeComponent() {
                 console.log(error);
             });
     }
+
     const stakeMatic = async () => {
-        console.log('stake')
+        const newWeb3Provider = await Moralis.enableWeb3();
+        let valid = true;
+
+        if (newWeb3Provider && metamask.account) {
+            const polygonNFTs = await Web3Api.account.getNFTsForContract({
+                chain: "mumbai",
+                address: account!,
+                token_address: CONTRACT_ADDRESS,
+            });
+            
+            if (polygonNFTs.result && polygonNFTs.result.length > 0) {
+                await Moralis.executeFunction({
+                    contractAddress: CONTRACT_GAME_ADDRESS,
+                    functionName: "getOwnerOfTokenId",
+                    abi: CONTRACT_GAME_ABI,
+                    params: { owner: metamask.account }
+                })
+                    .catch((error: any) => {
+                        valid = false;
+                        if (error.code === -32603) {
+                            if (error.data.message === "execution reverted: ERC721: owner query for nonexistent token"){
+                                handleStakeMatic();
+                            } else {
+                                stakeMatic();
+                            }
+                        }
+                        
+                    })
+                    .finally(() => {
+                        if (valid) {
+                            navigation("../game/start", { replace: true });
+                        }
+                    });
+                } else {
+                alert("You don't have an associated NFT with this smart contract.");
+            }
+        }        
+    }
+
+    const handleStakeMatic = async ()=> {
+        console.log("handleStakeMatic");
+        
         await web3.fetch({
             params: {
                 contractAddress: CONTRACT_GAME_ADDRESS,
                 functionName: "mint",
                 abi: CONTRACT_GAME_ABI,
                 //TODO: edit ETH value
-                msgValue: Moralis.Units.ETH(0.01),
+                msgValue: Moralis.Units.ETH(1),
             }
-        })
-            .then((response) => {
-                console.log(response);
-                navigation("../game/start", { replace: true })
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        }).finally(()=> {
+            // stakeMatic();
+            // navigation("../game/start", { replace: true });
+        });
+
     }
 
 
@@ -296,12 +333,12 @@ function HomeComponent() {
             >
                 {isAuthenticated ? "Mint" : "Connect Wallet"}
             </NetworkBtn>
-            <button
+            {/* <button
                 onClick={logOut}
                 disabled={isAuthenticating}
             >
                 Logout
-            </button>
+            </button> */}
         </PathContainer>
     );
 }
