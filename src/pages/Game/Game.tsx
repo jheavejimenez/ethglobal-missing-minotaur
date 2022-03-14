@@ -156,7 +156,6 @@ function Game() {
         <GameContainer>
             <MainHeader
                 btnName='Retry'
-                url='game'
                 onClick={() => {
                     setupGame(clicks);
                 }}

@@ -2,6 +2,7 @@
 import React from 'react';
 import styled, { CSSProperties } from "styled-components";
 import NavLink from '../components/Button/GameStartBtn';
+import { useNavigate } from "react-router-dom";
 
 
 const GameHeaderContainer = styled.div`
@@ -50,15 +51,29 @@ const RetryBtn = styled.button`
     border-radius: 30px;
 `;
 
+
+const GameStartBtn = styled.button`
+    background-color: #000;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 30px;
+`;
+
 interface IProps {
     btnName: string;
-    url: string;
     onClick?: () => void;
 }
 
 
 function MainHeader(props: IProps) {
-    const { btnName, url, onClick } = props;
+    const { btnName, onClick } = props;
+    const navigate = useNavigate();
+
     return (
         <GameHeaderContainer>
             <TitleContainer>
@@ -74,10 +89,18 @@ function MainHeader(props: IProps) {
                         {btnName}
                     </RetryBtn>
                     :
-                    <NavLink
-                        urlName={url}
-                        name={btnName}
-                    />
+                    <GameStartBtn
+                        onClick={() => {
+                            navigate("/ethglobal-missing-minotaur/game/demo", {
+                                replace: true,
+                                state: {
+                                    game_start: "demo"
+                                }
+                            })
+                        }}
+                    >
+                        Start Demo Game
+                    </GameStartBtn>
                 }
             </WalletContainer>
         </GameHeaderContainer>
