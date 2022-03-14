@@ -14,7 +14,7 @@ const GameHeaderContainer = styled.div`
     background-color: #1D1E21;
 `;
 
-const GameTitle = styled.a`
+const GameTitle = styled.button`
     text-align: center;
     color: #fff;
     border: none;
@@ -77,7 +77,16 @@ function MainHeader(props: IProps) {
     return (
         <GameHeaderContainer>
             <TitleContainer>
-                <GameTitle href='/ethglobal-missing-minotaur/'>
+                <GameTitle
+                    onClick={() => {
+                        navigate("/ethglobal-missing-minotaur/", {
+                            replace: true,
+                            state: {
+                                game_start: "demo"
+                            }
+                        })
+                    }}
+                >
                     Minotaur
                 </GameTitle>
             </TitleContainer>
