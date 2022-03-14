@@ -77,7 +77,7 @@ function MainHeader(props: IProps) {
     return (
         <GameHeaderContainer>
             <TitleContainer>
-                <GameTitle href='/'>
+                <GameTitle href='/ethglobal-missing-minotaur/'>
                     Minotaur
                 </GameTitle>
             </TitleContainer>

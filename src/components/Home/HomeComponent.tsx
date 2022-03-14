@@ -208,7 +208,7 @@ function HomeComponent() {
                 address: account!,
                 token_address: CONTRACT_ADDRESS,
             });
-            
+
             if (polygonNFTs.result && polygonNFTs.result.length > 0) {
                 await Moralis.executeFunction({
                     contractAddress: CONTRACT_GAME_ADDRESS,
@@ -219,28 +219,28 @@ function HomeComponent() {
                     .catch((error: any) => {
                         valid = false;
                         if (error.code === -32603) {
-                            if (error.data.message === "execution reverted: ERC721: owner query for nonexistent token"){
+                            if (error.data.message === "execution reverted: ERC721: owner query for nonexistent token") {
                                 handleStakeMatic();
                             } else {
                                 stakeMatic();
                             }
                         }
-                        
+
                     })
                     .finally(() => {
                         if (valid) {
-                            navigation("../ethglobal-missing-minotaur/game/start", { replace: true });
+                            navigation("/ethglobal-missing-minotaur/game/start", { replace: true });
                         }
                     });
-                } else {
+            } else {
                 alert("You don't have an associated NFT with this smart contract.");
             }
-        }        
+        }
     }
 
-    const handleStakeMatic = async ()=> {
+    const handleStakeMatic = async () => {
         console.log("handleStakeMatic");
-        
+
         await web3.fetch({
             params: {
                 contractAddress: CONTRACT_GAME_ADDRESS,
@@ -249,7 +249,7 @@ function HomeComponent() {
                 //TODO: edit ETH value
                 msgValue: Moralis.Units.ETH(1),
             }
-        }).finally(()=> {
+        }).finally(() => {
             // stakeMatic();
             // navigation("../game/start", { replace: true });
         });
